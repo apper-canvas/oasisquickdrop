@@ -1,14 +1,14 @@
-import React, { useState, useRef, useCallback } from "react"
-import { toast } from "react-toastify"
-import FileDropZone from "@/components/organisms/FileDropZone"
-import FileUploadQueue from "@/components/organisms/FileUploadQueue"
-import UploadStats from "@/components/molecules/UploadStats"
-import FileTypeInfo from "@/components/molecules/FileTypeInfo"
-import { uploadService } from "@/services/api/uploadService"
+import React, { useCallback, useRef, useState } from "react";
+import { toast } from "react-toastify";
+import { uploadService } from "@/services/api/uploadService";
+import UploadStats from "@/components/molecules/UploadStats";
+import FileTypeInfo from "@/components/molecules/FileTypeInfo";
+import FileDropZone from "@/components/organisms/FileDropZone";
+import FileUploadQueue from "@/components/organisms/FileUploadQueue";
 
 const Home = () => {
-  const [uploadFiles, setUploadFiles] = useState([])
-  const [dragCounter, setDragCounter] = useState(0)
+const [uploadFiles, setUploadFiles] = useState([])
+const [dragCounter, setDragCounter] = useState(0)
   const [isDragOver, setIsDragOver] = useState(false)
   const fileInputRef = useRef(null)
 
@@ -22,8 +22,7 @@ const Home = () => {
         toast.error(`${file.name}: ${validation.error}`)
         continue
       }
-
-      const uploadFile = uploadService.createUploadFile(file)
+const uploadFile = await uploadService.createUploadFile(file)
       newUploadFiles.push(uploadFile)
     }
 
@@ -34,10 +33,11 @@ const Home = () => {
     setUploadFiles(prev => [...prev, ...newUploadFiles])
 
     // Start uploading files automatically
+// Start uploading files automatically
     for (const uploadFile of newUploadFiles) {
       uploadService.uploadFile(uploadFile, (updatedFile) => {
         setUploadFiles(prev => prev.map(file => 
-          file.id === updatedFile.id ? updatedFile : file
+          file.id_c === updatedFile.id_c ? updatedFile : file
         ))
       })
     }
@@ -65,48 +65,48 @@ const Home = () => {
   }, [])
 
   const handleCancelUpload = useCallback((fileId) => {
-    setUploadFiles(prev => prev.map(file => 
-      file.id === fileId && file.status === "uploading" 
-        ? { ...file, status: "cancelled" }
+setUploadFiles(prev => prev.map(file => 
+      file.id_c === fileId && file.status_c === "uploading" 
+        ? { ...file, status_c: "cancelled" }
         : file
     ))
     toast.info("Upload cancelled")
   }, [])
 
   const handleRetryUpload = useCallback((fileId) => {
-    const fileToRetry = uploadFiles.find(f => f.id === fileId)
+const fileToRetry = uploadFiles.find(f => f.id_c === fileId)
     if (!fileToRetry) return
 
     const resetFile = {
       ...fileToRetry,
-      status: "queued",
-      progress: 0,
-      uploadedBytes: 0,
+      status_c: "queued",
+      progress_c: 0,
+      uploadedBytes_c: 0,
       error: null,
-      startTime: null,
-      completedTime: null
+      startTime_c: null,
+      completedTime_c: null
     }
 
     setUploadFiles(prev => prev.map(file => 
-      file.id === fileId ? resetFile : file
+      file.id_c === fileId ? resetFile : file
     ))
 
     uploadService.uploadFile(resetFile, (updatedFile) => {
       setUploadFiles(prev => prev.map(file => 
-        file.id === updatedFile.id ? updatedFile : file
+        file.id_c === updatedFile.id_c ? updatedFile : file
       ))
     })
 
-    toast.info(`Retrying upload for ${fileToRetry.name}`)
+toast.info(`Retrying upload for ${fileToRetry.name}`)
   }, [uploadFiles])
 
   const handleRemoveFile = useCallback((fileId) => {
-    setUploadFiles(prev => prev.filter(file => file.id !== fileId))
+    setUploadFiles(prev => prev.filter(file => file.id_c !== fileId))
   }, [])
 
-  const handleClearCompleted = useCallback(() => {
-    const completedCount = uploadFiles.filter(f => f.status === "completed").length
-    setUploadFiles(prev => prev.filter(file => file.status !== "completed"))
+const handleClearCompleted = useCallback(() => {
+    const completedCount = uploadFiles.filter(f => f.status_c === "completed").length
+    setUploadFiles(prev => prev.filter(file => file.status_c !== "completed"))
     if (completedCount > 0) {
       toast.success(`Cleared ${completedCount} completed uploads`)
     }
@@ -147,15 +147,15 @@ const Home = () => {
     if (files && files.length > 0) {
       handleFileDrop(files)
     }
-  }, [handleFileDrop])
+}, [handleFileDrop])
 
   const stats = {
     total: uploadFiles.length,
-    completed: uploadFiles.filter(f => f.status === "completed").length,
-    failed: uploadFiles.filter(f => f.status === "failed").length,
-    uploading: uploadFiles.filter(f => f.status === "uploading").length,
-    totalSize: uploadFiles.reduce((sum, file) => sum + file.size, 0),
-    uploadedSize: uploadFiles.reduce((sum, file) => sum + file.uploadedBytes, 0),
+    completed: uploadFiles.filter(f => f.status_c === "completed").length,
+    failed: uploadFiles.filter(f => f.status_c === "failed").length,
+    uploading: uploadFiles.filter(f => f.status_c === "uploading").length,
+    totalSize: uploadFiles.reduce((sum, file) => sum + file.size_c, 0),
+    uploadedSize: uploadFiles.reduce((sum, file) => sum + file.uploadedBytes_c, 0),
   }
 
   return (

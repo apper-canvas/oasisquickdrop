@@ -9,8 +9,8 @@ const FileUploadQueue = ({
   onRemoveFile, 
   onClearCompleted 
 }) => {
-  const completedFiles = files.filter(f => f.status === "completed")
-  const activeFiles = files.filter(f => f.status !== "completed")
+const completedFiles = files.filter(f => f.status_c === "completed")
+  const activeFiles = files.filter(f => f.status_c !== "completed")
 
   return (
     <div className="space-y-6">
@@ -22,7 +22,7 @@ const FileUploadQueue = ({
             <div className="px-3 py-1 bg-primary-100 text-primary-700 rounded-full text-sm font-medium">
               {files.length} {files.length === 1 ? "file" : "files"}
             </div>
-            {activeFiles.filter(f => f.status === "uploading").length > 0 && (
+{activeFiles.filter(f => f.status_c === "uploading").length > 0 && (
               <div className="flex items-center gap-1 px-3 py-1 bg-info-100 text-info-700 rounded-full text-sm font-medium">
                 <div className="w-2 h-2 bg-info-500 rounded-full animate-pulse"></div>
                 Uploading
@@ -45,8 +45,8 @@ const FileUploadQueue = ({
       {/* File List */}
       <div className="space-y-3 max-h-[600px] overflow-y-auto">
         {files.map((file) => (
-          <FileCard
-            key={file.id}
+<FileCard
+            key={file.id_c}
             file={file}
             onCancel={onCancelUpload}
             onRetry={onRetryUpload}

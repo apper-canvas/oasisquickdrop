@@ -7,27 +7,27 @@ import { formatFileSize, getFileTypeIcon } from "@/utils/fileHelpers"
 
 const FileCard = ({ file, onCancel, onRetry, onRemove }) => {
   const handleCancel = () => {
-    if (file.status === "uploading") {
-      onCancel(file.id)
+if (file.status_c === "uploading") {
+      onCancel(file.id_c)
     }
   }
 
   const handleRetry = () => {
-    if (file.status === "failed") {
-      onRetry(file.id)
+    if (file.status_c === "failed") {
+      onRetry(file.id_c)
     }
   }
 
   const handleRemove = () => {
-    if (file.status === "completed" || file.status === "failed" || file.status === "cancelled") {
-      onRemove(file.id)
+    if (file.status_c === "completed" || file.status_c === "failed" || file.status_c === "cancelled") {
+      onRemove(file.id_c)
     }
   }
 
-  const showProgress = file.status === "uploading" || (file.status === "completed" && file.progress === 100)
-  const canCancel = file.status === "uploading"
-  const canRetry = file.status === "failed"
-  const canRemove = ["completed", "failed", "cancelled"].includes(file.status)
+const showProgress = file.status_c === "uploading" || (file.status_c === "completed" && file.progress_c === 100)
+  const canCancel = file.status_c === "uploading"
+  const canRetry = file.status_c === "failed"
+  const canRemove = ["completed", "failed", "cancelled"].includes(file.status_c)
 
   return (
     <motion.div
@@ -39,15 +39,15 @@ const FileCard = ({ file, onCancel, onRetry, onRemove }) => {
       <div className="flex items-center gap-4">
         {/* File Thumbnail/Icon */}
         <div className="flex-shrink-0">
-          {file.thumbnailUrl ? (
+{file.thumbnailUrl_c ? (
             <img
-              src={file.thumbnailUrl}
-              alt={file.name}
+              src={file.thumbnailUrl_c}
+              alt={file.name_c}
               className="w-12 h-12 object-cover rounded-lg border border-gray-200"
             />
           ) : (
             <div className="w-12 h-12 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center">
-              <ApperIcon name={getFileTypeIcon(file.type)} className="w-6 h-6 text-gray-500" />
+<ApperIcon name={getFileTypeIcon(file.type_c)} className="w-6 h-6 text-gray-500" />
             </div>
           )}
         </div>
@@ -56,34 +56,34 @@ const FileCard = ({ file, onCancel, onRetry, onRemove }) => {
         <div className="flex-grow min-w-0 space-y-2">
           <div className="flex items-start justify-between gap-2">
             <div className="min-w-0 flex-grow">
-              <h3 className="font-medium text-gray-900 truncate" title={file.name}>
-                {file.name}
+<h3 className="font-medium text-gray-900 truncate" title={file.name_c}>
+                {file.name_c}
               </h3>
-              <div className="flex items-center gap-3 text-sm text-gray-500">
-                <span>{formatFileSize(file.size)}</span>
+<div className="flex items-center gap-3 text-sm text-gray-500">
+                <span>{formatFileSize(file.size_c)}</span>
                 <span>•</span>
-                <span className="capitalize">{file.type.split("/")[1] || file.type}</span>
-                {file.status === "uploading" && file.uploadedBytes > 0 && (
+                <span className="capitalize">{file.type_c.split("/")[1] || file.type_c}</span>
+                {file.status_c === "uploading" && file.uploadedBytes_c > 0 && (
                   <>
                     <span>•</span>
-                    <span>{formatFileSize(file.uploadedBytes)} uploaded</span>
+                    <span>{formatFileSize(file.uploadedBytes_c)} uploaded</span>
                   </>
                 )}
               </div>
             </div>
-            <StatusBadge status={file.status} />
+<StatusBadge status={file.status_c} />
           </div>
 
           {/* Progress Bar */}
-          {showProgress && (
+{showProgress && (
             <div className="space-y-1">
-              <ProgressBar progress={file.progress} status={file.status} />
-              {file.status === "uploading" && (
+              <ProgressBar progress={file.progress_c} status={file.status_c} />
+              {file.status_c === "uploading" && (
                 <div className="flex justify-between text-xs text-gray-500">
-                  <span>{file.progress}% complete</span>
-                  {file.startTime && (
+                  <span>{file.progress_c}% complete</span>
+                  {file.startTime_c && (
                     <span>
-                      {Math.floor((Date.now() - file.startTime) / 1000)}s elapsed
+                      {Math.floor((Date.now() - file.startTime_c) / 1000)}s elapsed
                     </span>
                   )}
                 </div>
@@ -100,10 +100,10 @@ const FileCard = ({ file, onCancel, onRetry, onRemove }) => {
           )}
 
           {/* Upload URL */}
-          {file.uploadUrl && (
+{file.uploadUrl_c && (
             <div className="flex items-center gap-2 text-sm text-success-600 bg-success-50 rounded-lg p-2">
               <ApperIcon name="Link" className="w-4 h-4 flex-shrink-0" />
-              <span className="truncate font-mono text-xs">{file.uploadUrl}</span>
+              <span className="truncate font-mono text-xs">{file.uploadUrl_c}</span>
             </div>
           )}
         </div>
